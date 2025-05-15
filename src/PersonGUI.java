@@ -16,7 +16,7 @@ public class PersonGUI extends JFrame implements ActionListener
    private JMenuItem fileMenu_new, fileMenu_open, fileMenu_save, fileMenu_saveAs, fileMenu_exit;
    private JMenuItem helpMenu_about;
    private PersonList people = new PersonList();
-   private JButton newPersonButton;
+   private JButton newPersonButton, createFromPersonButton;
    private JComboBox<Person> personCombo;
    
    public static void main(String[] args)
@@ -30,7 +30,7 @@ public class PersonGUI extends JFrame implements ActionListener
       setSize(300, 300);
       setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-      //Menu Bar Initialization
+      //Menu Bar Initialization - Nathan Nguyen
       JMenuBar bar = new JMenuBar();
       JMenu fileMenu = new JMenu("File");
       fileMenu_new = new JMenuItem("New");
@@ -59,10 +59,13 @@ public class PersonGUI extends JFrame implements ActionListener
       setJMenuBar(bar);
       setVisible(true);
 
-      //Main Layout Initialization
-      newPersonButton = new JButton("Create Person");
+      //Main Layout Initialization - Ian Moore
+      newPersonButton = new JButton("Create New Person");
+      createFromPersonButton = new JButton("Create New Person from Selected Person");
       getContentPane().add(newPersonButton);
+      getContentPane().add(createFromPersonButton, BorderLayout.EAST);
       newPersonButton.addActionListener(this);
+      createFromPersonButton.addActionListener(this);
 
       personCombo = new JComboBox<Person>();
       getContentPane().add(personCombo, BorderLayout.WEST);
@@ -78,11 +81,13 @@ public class PersonGUI extends JFrame implements ActionListener
 
    }
    
+   //Creates a new empty list and clears personCombo - Ian Moore
    private void createNewPersonList() 
    {
       people = new PersonList();
       personCombo.removeAllItems();
    }
+   
 
    private void createNewPerson() 
    {
@@ -108,7 +113,7 @@ public class PersonGUI extends JFrame implements ActionListener
          birthDay = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter birth day:", JOptionPane.PLAIN_MESSAGE));
          birthDate = new OCCCDate(birthDay, birthMonth, birthYear);
       } 
-      catch (NumberFormatException e) {
+      catch (IllegalArgumentException e) {
          JOptionPane.showMessageDialog(null, "Invalid Date!", "Invalid Person", JOptionPane.ERROR_MESSAGE);
          return;
       }
@@ -117,6 +122,49 @@ public class PersonGUI extends JFrame implements ActionListener
       people.add(newPerson);
       personCombo.addItem(newPerson);
       personCombo.setSelectedItem(newPerson);
+   }
+
+   //Creates a new Person using the fields of a pre-existing Person as default values - Ian Moore
+   void createNewPersonFromTemplate()
+   {
+      if(personCombo.setSelectedIndex() < 0) {
+         JOptionPane().showMessageDialog(null, "A pre-existing Person must be selected to do this!", "Empty List", JOptionPane.ERROR_MESSAGE);
+         return;
+      }
+
+      Person templatePerson = new Person((Person)personCombo.getSelectedItem());
+      
+      String firstName = (String)JOptionPane.showInputDialog(this, "First name: ", "New Person", JOptionPane.PLAIN_MESSAGE, null, null, templatePerson.getFirstName());
+      if(firstName == null || firstName.trim().isEmpty()) {
+         JOptionPane.showMessageDialog(null, "First name is required!", "Invalid Person", JOptionPane.ERROR_MESSAGE);
+         return;
+      }
+
+      String lastName = (String)JOptionPane.showInputDialog(this, "Last name: ", "New Person", JOptionPane.PLAIN_MESSAGE, null, null, templatePerson.getLastName());
+      if(lastName == null || firstName.trim().isEmpty()) {
+         JOptionPane.showMessageDialog(null, "Last name is required!", "Invalid Person", JOptionPane.ERROR_MESSAGE);
+         return;
+      }
+      
+      int birthDay, birthMonth, birthYear;
+      OCCCDate dateOfBirth;
+      try {
+         birthDay = Integer.parseInt((String)JOptionPane.showInputDialog(this, "Birth day: ", "New Person", JOptionPane.PLAIN_MESSAGE, null, null, templatePerson.getDOB().getDayOfMonth()));
+         birthMonth = Integer.parseInt((String)JOptionPane.showInputDialog(this, "Birth month: ", "New Person", JOptionPane.PLAIN_MESSAGE, null, null, templatePerson.getDOB().getMonthNumber()));
+         birthYear = Integer.parseInt((String)JOptionPane.showInputDialog(this, "Birth year: ", "New Person", JOptionPane.PLAIN_MESSAGE, null, null, templatePerson.getDOB().getYear()));
+         dateOfBirth = new OCCCDate(birthDay, birthMonth, birthYear);
+      }
+      catch(IllegalArgumentException e) {
+         JOptionPane.showMessageDialog(null, "Invalid Date!", "Invalid Person", JOptionPane.ERROR_MESSAGE);
+         return;
+      }
+
+      Person newPerson = new Person(firstName.trim(), lastName.trim(), dateOfBirth);
+      people.add(newPerson);
+      personCombo.addItem(newPerson);
+      personCombo.setSelectedItem(newPerson);
+      
+
    }
 
    private void openFile() 
@@ -232,6 +280,9 @@ public class PersonGUI extends JFrame implements ActionListener
       }
       if(e.getSource() == newPersonButton) {
          createNewPerson();
+      }
+      if(e.getSource() == createFromPersonButton) {
+         createNewPersonFromTemplate();
       }
   }
 
