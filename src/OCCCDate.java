@@ -6,8 +6,9 @@
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.io.Serializable;
 
-public class OCCCDate 
+public class OCCCDate implements Serializable 
 {
     private int dayOfMonth, monthOfYear, year;
     private GregorianCalendar gc;
