@@ -127,8 +127,8 @@ public class PersonGUI extends JFrame implements ActionListener
    //Creates a new Person using the fields of a pre-existing Person as default values - Ian Moore
    void createNewPersonFromTemplate()
    {
-      if(personCombo.setSelectedIndex() < 0) {
-         JOptionPane().showMessageDialog(null, "A pre-existing Person must be selected to do this!", "Empty List", JOptionPane.ERROR_MESSAGE);
+      if(personCombo.getSelectedIndex() < 0) {
+         JOptionPane.showMessageDialog(null, "A pre-existing Person must be selected to do this!", "Empty List", JOptionPane.ERROR_MESSAGE);
          return;
       }
 
