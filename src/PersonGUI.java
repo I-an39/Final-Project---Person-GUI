@@ -11,76 +11,138 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.ArrayList;
 import java.io.*;
 
-public class PersonGUI extends JFrame implements ActionListener
-{
-   private JMenuItem fileMenu_new, fileMenu_open, fileMenu_save, fileMenu_saveAs, fileMenu_exit;
-   private JMenuItem helpMenu_about;
-   private PersonList people = new PersonList();
-   private JButton newPersonButton, createFromPersonButton;
-   private JComboBox<Person> personCombo;
-   
-   public static void main(String[] args)
-   {
-      PersonGUI pgui = new PersonGUI();
-   }
+public class PersonGUI extends JFrame implements ActionListener {
+    private JMenu fileMenu, helpMenu;
+    private JMenuItem fileMenu_new, fileMenu_open, fileMenu_save, fileMenu_saveAs, fileMenu_exit;
+    private JMenuItem helpMenu_about;
+    
+    private PersonList people = new PersonList();
+    private JButton newPersonButton, createFromPersonButton;
+    private JComboBox<Person> personCombo;
+    private JTextField firstNameField, lastNameField, dayField, monthField, yearField, govIDField, studentIDField;
+    private JLabel govIDLabel, studentIDLabel;
+    private JList<String> personList;
 
-   public PersonGUI() 
-   {
-      super("Person GUI");
-      setSize(300, 300);
-      setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    public PersonGUI() {
+        setTitle("Person Manager");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-      //Menu Bar Initialization - Nathan Nguyen
-      JMenuBar bar = new JMenuBar();
-      JMenu fileMenu = new JMenu("File");
-      fileMenu_new = new JMenuItem("New");
-      fileMenu_open = new JMenuItem("Open");
-      fileMenu_save = new JMenuItem("Save");
-      fileMenu_saveAs = new JMenuItem("Save As");
-      fileMenu_exit = new JMenuItem("Exit");
-      JMenu helpMenu = new JMenu("Help");
-      helpMenu_about = new JMenuItem("About");
+        // File Menu Setup
+        JMenuBar menuBar = new JMenuBar();
 
-      fileMenu_new.addActionListener(this);
-      fileMenu_open.addActionListener(this);
-      fileMenu_save.addActionListener(this);
-      fileMenu_saveAs.addActionListener(this);
-      fileMenu_exit.addActionListener(this);
-      helpMenu_about.addActionListener(this);
+        fileMenu = new JMenu("File");
+        fileMenu_new = new JMenuItem("New");
+        fileMenu_open = new JMenuItem("Open...");
+        fileMenu_save = new JMenuItem("Save");
+        fileMenu_saveAs = new JMenuItem("Save as...");
+        fileMenu_exit = new JMenuItem("Exit");
 
-      fileMenu.add(fileMenu_new);
-      fileMenu.add(fileMenu_open);
-      fileMenu.add(fileMenu_save);
-      fileMenu.add(fileMenu_saveAs);
-      fileMenu.add(fileMenu_exit);
-      helpMenu.add(helpMenu_about);
-      bar.add(fileMenu);
-      bar.add(helpMenu);
-      setJMenuBar(bar);
-      setVisible(true);
+        fileMenu.add(fileMenu_new);
+        fileMenu.add(fileMenu_open);
+        fileMenu.addSeparator();
+        fileMenu.add(fileMenu_save);
+        fileMenu.add(fileMenu_saveAs);
+        fileMenu.addSeparator();
+        fileMenu.add(fileMenu_exit);
 
-      //Main Layout Initialization - Ian Moore
-      newPersonButton = new JButton("Create New Person");
-      createFromPersonButton = new JButton("Create New Person from Selected Person");
-      getContentPane().add(newPersonButton);
-      getContentPane().add(createFromPersonButton, BorderLayout.EAST);
-      newPersonButton.addActionListener(this);
-      createFromPersonButton.addActionListener(this);
+        fileMenu_new.addActionListener(this);
+        fileMenu_open.addActionListener(this);
+        fileMenu_save.addActionListener(this);
+        fileMenu_saveAs.addActionListener(this);
+        fileMenu_exit.addActionListener(this);
 
-      personCombo = new JComboBox<Person>();
-      getContentPane().add(personCombo, BorderLayout.WEST);
+        menuBar.add(fileMenu);
 
+        // Help Menu Setup
+        helpMenu = new JMenu("Help");
+        helpMenu_about = new JMenuItem("About");
+        helpMenu.add(helpMenu_about);
+        menuBar.add(helpMenu);
+        
+        helpMenu_about.addActionListener(this);
 
-      addWindowListener(new WindowAdapter(){
-         @Override
-         public void windowClosing(WindowEvent e)
-         {
-            exitPersonApp();
-         }
-      });
+        setJMenuBar(menuBar);
 
-   }
-   
+        // Initialize Panel
+        JPanel formPanel = new JPanel(new GridLayout(6, 2));
+        formPanel.setBorder(BorderFactory.createTitledBorder("INSERT PERSON NAME HERE"));
+
+        // First Name Setup
+        formPanel.add(new JLabel("First Name:"));
+        firstNameField = new JTextField();
+        formPanel.add(firstNameField);
+
+        // Last Name Setup
+        formPanel.add(new JLabel("Last Name:"));
+        lastNameField = new JTextField();
+        formPanel.add(lastNameField);
+
+        // Birthday Setup
+        formPanel.add(new JLabel("Birthday (mm/dd/yyyy):"));
+        monthField = new JTextField(2);
+        dayField = new JTextField(2);
+        yearField = new JTextField(4);
+        JPanel birthdayPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        birthdayPanel.add(monthField);
+        birthdayPanel.add(new JLabel(" / "));
+        birthdayPanel.add(dayField);
+        birthdayPanel.add(new JLabel(" / "));
+        birthdayPanel.add(yearField);
+        formPanel.add(birthdayPanel);
+
+        // Person  Type Setup
+        formPanel.add(new JLabel("Person Type:"));
+        String[] personTypes = { "Person", "RegisteredPerson", "OCCCPerson" };
+        JComboBox<String> personTypeBox = new JComboBox<>(personTypes);
+        formPanel.add(personTypeBox);
+        
+        // Government ID Setup
+        govIDLabel = new JLabel("Government ID:");
+        formPanel.add(govIDLabel);
+        govIDField = new JTextField();
+        formPanel.add(govIDField);
+        //govIDLabel.setVisible(false);
+        //govIDField.setVisible(false);
+
+        // Student ID Setup 
+        studentIDLabel = new JLabel("Student ID:");
+        formPanel.add(studentIDLabel);
+        studentIDField = new JTextField();
+        formPanel.add(studentIDField);
+        //studentIDLabel.setVisible(false);
+        //studentIDField.setVisible(false);
+
+        add(formPanel, BorderLayout.NORTH);
+
+        // Persons List
+        personList = new JList<>();
+        JScrollPane listScrollPane = new JScrollPane(personList);
+        listScrollPane.setBorder(BorderFactory.createTitledBorder("Person List"));
+        add(listScrollPane, BorderLayout.CENTER);
+
+        // Buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(new JButton("Create New Pesron"));
+        buttonPanel.add(new JButton("Duplicate"));
+        buttonPanel.add(new JButton("Delete"));
+        buttonPanel.add(new JButton("Clear"));
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        setVisible(true);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exitPersonApp();
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        PersonGUI GUI = new PersonGUI();
+    }
    //Creates a new empty list and clears personCombo - Ian Moore
    private void createNewPersonList() 
    {
