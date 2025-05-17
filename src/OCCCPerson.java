@@ -28,7 +28,7 @@ public class OCCCPerson extends RegisteredPerson
     @Override 
     public String toString()
     {
-        return super.toString() + " [ " + studentID + " ]"; 
+        return super.toString() + " [ " + "Student ID: " + studentID + " ]"; 
     }
     
     public boolean equals(OCCCPerson p)

@@ -32,7 +32,7 @@ public class RegisteredPerson extends Person
     @Override
     public String toString()
     {
-        return super.toString() + " [ " + govID + " ]";
+        return super.toString() + " [ " + "Government ID: " + govID + " ]";
     }
     
     public boolean equals(RegisteredPerson p)

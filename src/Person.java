@@ -53,7 +53,7 @@ public class Person implements Serializable, Comparable<Person>
     @Override
     public String toString()
     {
-        return lastName + ", " + firstName + " [ " + dob.toString() + " ] ";
+        return lastName + ", " + firstName + " [ " + "DOB: " + dob.toString() + " ] ";
     }
     
     @Override 

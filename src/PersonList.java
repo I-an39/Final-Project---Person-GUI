@@ -10,15 +10,18 @@ public class PersonList implements Iterable<Person>
 {
     private ArrayList<Person> personArray = new ArrayList<>();
     private String nameAsFile = null;
+    private boolean hasBeenModified = false;
     
     public void add(Person p)
     {
         personArray.add(p);
+        hasBeenModified = true;
     }
     
     public void delete(Person p)
     {
         personArray.remove(p);
+        hasBeenModified = true;
     }
 
     public boolean isEmpty()
@@ -29,6 +32,17 @@ public class PersonList implements Iterable<Person>
     public boolean hasFileName()
     {
        return nameAsFile != null;
+    }
+
+    public boolean hasBeenChangedSinceLastSave()
+    {
+      return hasBeenModified;
+    }
+    
+    public void clear()
+    {
+      personArray.clear();
+      hasBeenModified = true;
     }
 
     public int size()
@@ -44,6 +58,8 @@ public class PersonList implements Iterable<Person>
       for(int i = 0; i < personArray.size(); i++) {
          oout.writeObject(personArray.get(i));
       }
+
+      hasBeenModified = false;
     }
 
     public void save(String fileName) throws IOException
@@ -55,6 +71,8 @@ public class PersonList implements Iterable<Person>
       for(int i = 0; i < personArray.size(); i++) {
          oout.writeObject(personArray.get(i));
       }
+
+      hasBeenModified = false;
     }
 
     public void load(File file) throws Exception
