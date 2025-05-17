@@ -18,7 +18,6 @@ public class PersonGUI extends JFrame implements ActionListener {
     
     private PersonList people = new PersonList();
     private JButton createPersonButton, duplicatePersonButton, deleteButton, clearButton, finishButton;
-    //private JComboBox<Person> personCombo;
     private JComboBox personTypeBox;
     private JTextField firstNameField, lastNameField, dayField, monthField, yearField, govIDField, studentIDField;
     private JLabel govIDLabel, studentIDLabel;
@@ -83,7 +82,7 @@ public class PersonGUI extends JFrame implements ActionListener {
         //GUI - Priyanka Kolekar
         // Initialize Panel 
         JPanel formPanel = new JPanel(new GridLayout(6, 2));
-        formPanel.setBorder(BorderFactory.createTitledBorder("CREATE PERSON HERE"));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Person Details"));
 
         // First Name Setup
         formPanel.add(new JLabel("First Name:"));
@@ -126,8 +125,6 @@ public class PersonGUI extends JFrame implements ActionListener {
         govIDField = new JTextField();
         govIDField.setEnabled(false);
         formPanel.add(govIDField);
-        //govIDLabel.setVisible(false);
-        //govIDField.setVisible(false);
 
         // Student ID Setup 
         studentIDLabel = new JLabel("Student ID:");
@@ -135,8 +132,6 @@ public class PersonGUI extends JFrame implements ActionListener {
         studentIDField = new JTextField();
         studentIDField.setEnabled(false);
         formPanel.add(studentIDField);
-        //studentIDLabel.setVisible(false);
-        //studentIDField.setVisible(false);
 
         add(formPanel, BorderLayout.NORTH);
 
@@ -407,6 +402,7 @@ public class PersonGUI extends JFrame implements ActionListener {
 
    private void saveFile()
    {
+	  // If there is no file name, save file as instead.
       if (!people.hasFileName()) {
          saveFileAs();
       } 
