@@ -27,7 +27,7 @@ public class PersonGUI extends JFrame implements ActionListener {
     public PersonGUI() {
         setTitle("Person GUI");
         setSize(600, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // File Menu Setup - Nathan Nguyen
